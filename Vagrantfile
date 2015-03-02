@@ -68,6 +68,7 @@ Vagrant.configure("2") do |config|
       sudo service iptables stop
       sudo service messagebus restart
       sudo service avahi-daemon restart
+      sleep 3 # wait for avahi-daemon to discover other servers
       sudo tar --extract --ungzip --file=/vagrant/#{PE_BUNDLE} -C /tmp/
       sudo /tmp/#{PE_VERSION}/puppet-enterprise-installer -A /vagrant/#{NAME_MASTER}.answer
       sudo echo -e "autosign = true\n" >> /etc/puppetlabs/puppet/puppet.conf
@@ -102,6 +103,7 @@ Vagrant.configure("2") do |config|
 #       sudo service iptables stop
 #       sudo service messagebus restart
 #       sudo service avahi-daemon restart
+#       sleep 3 # wait for avahi-daemon to discover other servers
 #       sudo tar --extract --ungzip --file=/vagrant/#{PE_BUNDLE} -C /tmp/
 #       sudo /tmp/#{PE_VERSION}/puppet-enterprise-installer -A /vagrant/#{NAME_CA}.answer
 #       sudo /usr/local/bin/puppet config set environment_timeout #{ENVIRONMENT_TIMEOUT} --section master
@@ -134,6 +136,7 @@ Vagrant.configure("2") do |config|
       sudo service iptables stop
       sudo service messagebus restart
       sudo service avahi-daemon restart
+      sleep 3 # wait for avahi-daemon to discover other servers
       sudo tar --extract --ungzip --file=/vagrant/#{PE_BUNDLE} -C /tmp/
       sudo /tmp/#{PE_VERSION}/puppet-enterprise-installer -A /vagrant/#{NAME_PUPPETDB}.answer
       sudo /usr/local/bin/puppet config set environment_timeout #{ENVIRONMENT_TIMEOUT} --section master
@@ -166,6 +169,7 @@ Vagrant.configure("2") do |config|
       sudo service iptables stop
       sudo service messagebus restart
       sudo service avahi-daemon restart
+      sleep 3 # wait for avahi-daemon to discover other servers
       sudo tar --extract --ungzip --file=/vagrant/#{PE_BUNDLE} -C /tmp/
       sudo /tmp/#{PE_VERSION}/puppet-enterprise-installer -A /vagrant/#{NAME_CONSOLE}.answer
       sudo /usr/local/bin/puppet config set environment_timeout #{ENVIRONMENT_TIMEOUT} --section master
@@ -197,7 +201,7 @@ Vagrant.configure("2") do |config|
       sudo service iptables stop
       sudo service messagebus restart
       sudo service avahi-daemon restart
-      #sleep 3 # wait for avahi-daemon to discover other servers
+      sleep 3 # wait for avahi-daemon to discover other servers
       curl -k https://master.local:8140/packages/current/install.bash | sudo bash
       sudo /usr/local/bin/puppet config set environment_timeout #{ENVIRONMENT_TIMEOUT} --section master
       sudo /usr/local/bin/puppet config set runinterval #{RUNINTERVAL} --section agent
