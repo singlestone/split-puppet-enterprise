@@ -50,7 +50,6 @@ Vagrant.configure("2") do |config|
     end
     master.vm.hostname = "#{NAME_MASTER}.#{DOMAIN}"
     master.vm.network "private_network", type: "dhcp"
-    master.vm.post_up_message = "## PUT A USEFUL MESSAGE HERE"
     master.vm.provider "virtualbox" do |v|
       v.name = "Puppet Master"
       v.memory = MEMORY_MASTER
@@ -86,7 +85,6 @@ Vagrant.configure("2") do |config|
 #     end
 #     ca.vm.hostname = "#{NAME_CA}.#{DOMAIN}"
 #     ca.vm.network "private_network", type: "dhcp"
-#     ca.vm.post_up_message = "## PUT A USEFUL MESSAGE HERE"
 #     ca.vm.provider "virtualbox" do |v|
 #       v.name = "Puppet CA"
 #       v.memory = MEMORY_CA
@@ -119,7 +117,6 @@ Vagrant.configure("2") do |config|
     end
     puppetdb.vm.hostname = "#{NAME_PUPPETDB}.#{DOMAIN}"
     puppetdb.vm.network "private_network", type: "dhcp"
-    puppetdb.vm.post_up_message = "## PUT A USEFUL MESSAGE HERE"
     puppetdb.vm.provider "virtualbox" do |v|
       v.name = "Puppet DB"
       v.memory = MEMORY_PUPPETDB
@@ -152,7 +149,7 @@ Vagrant.configure("2") do |config|
     end
     console.vm.hostname = "#{NAME_CONSOLE}.#{DOMAIN}"
     console.vm.network "private_network", type: "dhcp"
-    console.vm.post_up_message = "## PUT A USEFUL MESSAGE HERE"
+    console.vm.post_up_message = "Puppet Enterprise is now running. Access the console at '\033[36mhttp://console.local\033[32m'."
     console.vm.provider "virtualbox" do |v|
       v.name = "Puppet Console"
       v.memory = MEMORY_CONSOLE
