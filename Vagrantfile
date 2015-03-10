@@ -15,8 +15,12 @@ NAME_NODE="node"
 # Group name (used in VirtualBox GUI)
 GROUP="Puppet Enterprise"
 
-# Number of managed nodes to create. Cannot be greater than seven because of PE licensing.
-INSTANCES=2
+# Managed nodes. The total cannot be greater than seven because of PE licensing.
+# Number of Enterprise Linux managed nodes to create.
+EL_INSTANCES=1
+
+# Number of Windows 2012 
+WIN_INSTANCES=1
 
 # Domain for all nodes, i.e. "example.com". Defaults to "local".
 # Changing this requires modifying the answer files.
@@ -30,9 +34,9 @@ CPU_PUPPETDB=2
 CPU_NODE=1
 
 # Memory settings for Puppet infrastructure and managed nodes
-MEMORY_MASTER=4096
+MEMORY_MASTER=3072
 MEMORY_CA=512
-MEMORY_CONSOLE=2048
+MEMORY_CONSOLE=1024
 MEMORY_PUPPETDB=2048
 MEMORY_NODE=384
 
@@ -175,16 +179,16 @@ Vagrant.configure("2") do |config|
     SHELL
   end
 
-  INSTANCES.times do |i|
-    config.vm.define "node#{i}".to_sym do |node|
+  EL_INSTANCES.times do |i|
+    config.vm.define "el-node#{i}".to_sym do |node|
       node.vm.box = "chef/centos-6.6"
       if Vagrant.has_plugin?("vagrant-cachier")
         config.cache.scope = :machine
       end
-      node.vm.hostname = "node#{i}.#{DOMAIN}"
+      node.vm.hostname = "el-node#{i}.#{DOMAIN}"
       node.vm.network "private_network", type: "dhcp"
       node.vm.provider "virtualbox" do |v|
-        v.name = "PE-Managed Node #{i}"
+        v.name = "PE-Managed EL Node #{i}"
         v.memory = MEMORY_NODE
         v.cpus = CPU_NODE
         v.customize [
@@ -204,6 +208,38 @@ Vagrant.configure("2") do |config|
       sudo /usr/local/bin/puppet config set runinterval #{RUNINTERVAL} --section agent
       sudo service pe-puppet restart
       SHELL
+    end
+  end
+  
+  WIN_INSTANCES.times do |i|
+    config.vm.guest = :windows
+    config.vm.communicator = "winrm"
+    config.winrm.timeout = 500
+    config.vm.define "win-node#{i}".to_sym do |node|
+      node.vm.box = "windows"
+      node.vm.hostname = "win-node#{i}.#{DOMAIN}"
+      node.vm.network "private_network", type: "dhcp"
+      node.vm.provider "virtualbox" do |v|
+        v.name = "PE-Managed Windows Node #{i}"
+        v.memory = MEMORY_NODE
+        v.cpus = CPU_NODE
+        v.customize [
+          "modifyvm", :id,
+          "--groups", "/#{GROUP}"
+        ]
+      end
+#      node.vm.provision "shell", inline: <<-SHELL
+#      sudo yum install --assumeyes epel-release
+#      sudo yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns
+#      sudo service iptables stop
+#      sudo service messagebus restart
+#      sudo service avahi-daemon restart
+#      sleep 3 # wait for avahi-daemon to discover other servers
+#      curl -k https://master.local:8140/packages/current/install.bash | sudo bash
+#      sudo /usr/local/bin/puppet config set environment_timeout #{ENVIRONMENT_TIMEOUT} --section master
+#      sudo /usr/local/bin/puppet config set runinterval #{RUNINTERVAL} --section agent
+#      sudo service pe-puppet restart
+#      SHELL
     end
   end
 
