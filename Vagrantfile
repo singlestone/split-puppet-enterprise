@@ -180,14 +180,14 @@ Vagrant.configure("2") do |config|
   end
 
   EL_INSTANCES.times do |i|
-    config.vm.define "el-node#{i}".to_sym do |node|
-      node.vm.box = "chef/centos-6.6"
+    config.vm.define "elnode#{i}".to_sym do |elnode|
+      elnode.vm.box = "chef/centos-6.6"
       if Vagrant.has_plugin?("vagrant-cachier")
         config.cache.scope = :machine
       end
-      node.vm.hostname = "el-node#{i}.#{DOMAIN}"
-      node.vm.network "private_network", type: "dhcp"
-      node.vm.provider "virtualbox" do |v|
+      elnode.vm.hostname = "elnode#{i}.#{DOMAIN}"
+      elnode.vm.network "private_network", type: "dhcp"
+      elnode.vm.provider "virtualbox" do |v|
         v.name = "PE-Managed EL Node #{i}"
         v.memory = MEMORY_NODE
         v.cpus = CPU_NODE
@@ -196,7 +196,7 @@ Vagrant.configure("2") do |config|
           "--groups", "/#{GROUP}"
         ]
       end
-      node.vm.provision "shell", inline: <<-SHELL
+      elnode.vm.provision "shell", inline: <<-SHELL
       sudo yum install --assumeyes epel-release
       sudo yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns
       sudo service iptables stop
@@ -212,14 +212,16 @@ Vagrant.configure("2") do |config|
   end
   
   WIN_INSTANCES.times do |i|
-    config.vm.guest = :windows
-    config.vm.communicator = "winrm"
-    config.winrm.timeout = 500
-    config.vm.define "win-node#{i}".to_sym do |node|
-      node.vm.box = "windows"
-      node.vm.hostname = "win-node#{i}.#{DOMAIN}"
-      node.vm.network "private_network", type: "dhcp"
-      node.vm.provider "virtualbox" do |v|
+    config.vm.define "winnode#{i}".to_sym do |winnode|
+      winnode.vm.guest = :windows
+      winnode.vm.communicator = "winrm"
+      winnode.winrm.timeout = 500
+      winnode.vm.box = "windows"
+      winnode.vm.hostname = "winnode#{i}.#{DOMAIN}"
+      winnode.vm.network "private_network", type: "dhcp"
+      winnode.vm.network :forwarded_port, guest: 5985, host: 5985, id: "winrm", auto_correct: true
+      winnode.vm.network :forwarded_port, guest: 3389, host: 3389, id: "rdp", auto_correct: true
+      winnode.vm.provider "virtualbox" do |v|
         v.name = "PE-Managed Windows Node #{i}"
         v.memory = MEMORY_NODE
         v.cpus = CPU_NODE
@@ -228,7 +230,7 @@ Vagrant.configure("2") do |config|
           "--groups", "/#{GROUP}"
         ]
       end
-#      node.vm.provision "shell", inline: <<-SHELL
+#      winnode.vm.provision "shell", inline: <<-SHELL
 #      sudo yum install --assumeyes epel-release
 #      sudo yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns
 #      sudo service iptables stop
