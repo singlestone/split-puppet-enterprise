@@ -5,7 +5,7 @@ PE_INSTALLER="puppet-enterprise-3.7.2-el-6-x86_64.tar.gz"
 PE_WIN_AGENT="puppet-enterprise-3.7.2-x64.msi"
 BONJOUR_WIN_CLIENT="Bonjour64.msi"
 
-mkdir ./bin
+mkdir -p ./bin
 cd ./bin
 
 # Check for Puppet Enterprise installer and download if missing
@@ -20,7 +20,7 @@ fi
 
 # Check for Puppet Enterprise Windows agent and download if missing
 echo -e "\nVerifying that Puppet Enterprise Windows agent is available..."
-if [ ! -f $PE_INSTALLER ]; then
+if [ ! -f $PE_WIN_AGENT ]; then
     echo "Puppet Enterprise Windows agent not found. Downloading..."
     curl -O $URL$PE_WIN_AGENT
 else
@@ -30,9 +30,9 @@ fi
 
 # Check for Bonjour client for Windows and download if missing
 echo -e "\nVerifying that Bonjour client for Windows is available..."
-if [ ! -f $PE_INSTALLER ]; then
+if [ ! -f $BONJOUR_WIN_CLIENT ]; then
     echo "Bonjour client for Windows not found. Downloading..."
-    curl -O $URL$PE_WIN_AGENT
+    curl -O $URL$BONJOUR_WIN_CLIENT
 else
     echo "Bonjour client for Windows agent was found."
 fi
