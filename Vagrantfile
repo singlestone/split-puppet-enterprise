@@ -1,6 +1,39 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+PUPPET_ENTERPRISE_VERSION="3.7.2"
+
+URL="https://s3.amazonaws.com/ddig-puppet/"
+PE_INSTALLER="puppet-enterprise-#{PUPPET_ENTERPRISE_VERSION}-el-6-x86_64.tar.gz"
+PE_WIN_AGENT="puppet-enterprise-#{PUPPET_ENTERPRISE_VERSION}-x64.msi"
+BONJOUR_WIN_CLIENT="Bonjour64.msi"
+
+# Check for required installers and download if missing
+if ! File.exists?('./bin')
+  printf "The 'bin' directory was not found, creating it..."
+  require 'fileutils'
+  FileUtils.mkdir_p './bin'
+  puts "done."
+end
+
+if ! File.exists?("./bin/#{PE_INSTALLER}")
+  puts "\033[31mPuppet Enterprise installer could not be found!\033[39m"
+  puts "Please run '\033[36m./run_first.sh\033[39m' to download required dependencies."
+  exit 1
+end
+
+if ! File.exists?("./bin/#{PE_WIN_AGENT}")
+  puts "\033[31mPuppet Enterprise Windows agent installer could not be found!\033[39m"
+  puts "Please run '\033[36m./run_first.sh\033[39m' to download required dependencies."
+  exit 1
+end
+
+if ! File.exists?("./bin/#{BONJOUR_WIN_CLIENT}")
+  puts "\033[31mBonjour installer could not be found!\033[39m"
+  puts "Please run '\033[36m./run_first.sh\033[39m' to download required dependencies."
+  exit 1
+end
+
 # Puppet Enterprise Installer
 PE_VERSION="puppet-enterprise-3.7.2-el-6-x86_64"
 PE_BUNDLE="./bin/#{PE_VERSION}.tar.gz"
@@ -46,14 +79,6 @@ ENVIRONMENT_TIMEOUT="30s"
 
 # Pause after Avahi startup
 AVAHI_DELAY="5"
-
-
-# Check for required installers and download if missing
-#if ! File.exists?('./SQLEXPRWT_x64_ENU.exe')
-#  puts 'SQL Server installer could not be found!'
-#  puts "Please run:\n  wget http://download.microsoft.com/download/0/4/B/04BE03CD-EAF3-4797-9D8D-2E08E316C998/SQLEXPRWT_x64_ENU.exe"
-#  exit 1
-#end
 
 
 Vagrant.configure("2") do |config|
