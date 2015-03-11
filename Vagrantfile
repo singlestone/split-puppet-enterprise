@@ -3,7 +3,7 @@
 
 # Puppet Enterprise Installer
 PE_VERSION="puppet-enterprise-3.7.2-el-6-x86_64"
-PE_BUNDLE="#{PE_VERSION}.tar.gz"
+PE_BUNDLE="./bin/#{PE_VERSION}.tar.gz"
 
 # Hostnames of systems
 NAME_MASTER="master"
@@ -29,7 +29,7 @@ DOMAIN="local"
 # CPU settings for Puppet infrastructure and managed nodes
 CPU_MASTER=2
 CPU_CA=1
-CPU_CONSOLE=2
+CPU_CONSOLE=1
 CPU_PUPPETDB=2
 CPU_NODE=1
 
@@ -43,6 +43,17 @@ MEMORY_NODE=384
 # Puppet configuration parameters
 RUNINTERVAL="5m"
 ENVIRONMENT_TIMEOUT="30s"
+
+# Pause after Avahi startup
+AVAHI_DELAY="5"
+
+
+# Check for required installers and download if missing
+#if ! File.exists?('./SQLEXPRWT_x64_ENU.exe')
+#  puts 'SQL Server installer could not be found!'
+#  puts "Please run:\n  wget http://download.microsoft.com/download/0/4/B/04BE03CD-EAF3-4797-9D8D-2E08E316C998/SQLEXPRWT_x64_ENU.exe"
+#  exit 1
+#end
 
 
 Vagrant.configure("2") do |config|
@@ -65,20 +76,20 @@ Vagrant.configure("2") do |config|
     end
     # This should all be refactored into a parameterized external script file that is shared between all Puppet VMs
     master.vm.provision "shell", inline: <<-SHELL
-      sudo yum install --assumeyes epel-release
-      sudo yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns at
-      sudo service atd start
-      sudo service iptables stop
-      sudo service messagebus restart
-      sudo service avahi-daemon restart
-      sleep 3 # wait for avahi-daemon to discover other servers
-      sudo tar --extract --ungzip --file=/vagrant/#{PE_BUNDLE} -C /tmp/
-      sudo /tmp/#{PE_VERSION}/puppet-enterprise-installer -A /vagrant/#{NAME_MASTER}.answer
-      sudo echo -e "autosign = true\n" >> /etc/puppetlabs/puppet/puppet.conf
-      sudo /usr/local/bin/puppet config set environment_timeout #{ENVIRONMENT_TIMEOUT} --section master
-      sudo /usr/local/bin/puppet config set runinterval #{RUNINTERVAL} --section agent
-      sudo service pe-puppetserver restart
-      sudo service pe-puppet restart
+      yum install --assumeyes epel-release
+      yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns at
+      service atd start
+      service iptables stop
+      service messagebus restart
+      service avahi-daemon restart
+      sleep #{AVAHI_DELAY} # wait for avahi-daemon to discover other servers
+      tar --extract --ungzip --file=/vagrant/#{PE_BUNDLE} -C /tmp/
+      /tmp/#{PE_VERSION}/puppet-enterprise-installer -A /vagrant/#{NAME_MASTER}.answer
+      echo -e "autosign = true\n" >> /etc/puppetlabs/puppet/puppet.conf
+      /usr/local/bin/puppet config set environment_timeout #{ENVIRONMENT_TIMEOUT} --section master
+      /usr/local/bin/puppet config set runinterval #{RUNINTERVAL} --section agent
+      service pe-puppetserver restart
+      service pe-puppet restart
     SHELL
   end
 
@@ -99,18 +110,18 @@ Vagrant.configure("2") do |config|
 #       ]
 #     end
 #     ca.vm.provision "shell", inline: <<-SHELL
-#       sudo yum install --assumeyes epel-release
-#       sudo yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns at
-#       sudo service atd start
-#       sudo service iptables stop
-#       sudo service messagebus restart
-#       sudo service avahi-daemon restart
-#       sleep 3 # wait for avahi-daemon to discover other servers
-#       sudo tar --extract --ungzip --file=/vagrant/#{PE_BUNDLE} -C /tmp/
-#       sudo /tmp/#{PE_VERSION}/puppet-enterprise-installer -A /vagrant/#{NAME_CA}.answer
-#       sudo /usr/local/bin/puppet config set environment_timeout #{ENVIRONMENT_TIMEOUT} --section master
-#       sudo /usr/local/bin/puppet config set runinterval #{RUNINTERVAL} --section agent
-#       sudo service pe-puppet restart
+#       yum install --assumeyes epel-release
+#       yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns at
+#       service atd start
+#       service iptables stop
+#       service messagebus restart
+#       service avahi-daemon restart
+#       sleep #{AVAHI_DELAY} # wait for avahi-daemon to discover other servers
+#       tar --extract --ungzip --file=/vagrant/#{PE_BUNDLE} -C /tmp/
+#       /tmp/#{PE_VERSION}/puppet-enterprise-installer -A /vagrant/#{NAME_CA}.answer
+#       /usr/local/bin/puppet config set environment_timeout #{ENVIRONMENT_TIMEOUT} --section master
+#       /usr/local/bin/puppet config set runinterval #{RUNINTERVAL} --section agent
+#       service pe-puppet restart
 #     SHELL
 #   end
   
@@ -131,18 +142,18 @@ Vagrant.configure("2") do |config|
       ]
     end
     puppetdb.vm.provision "shell", inline: <<-SHELL
-      sudo yum install --assumeyes epel-release
-      sudo yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns at
-      sudo service atd start
-      sudo service iptables stop
-      sudo service messagebus restart
-      sudo service avahi-daemon restart
-      sleep 3 # wait for avahi-daemon to discover other servers
-      sudo tar --extract --ungzip --file=/vagrant/#{PE_BUNDLE} -C /tmp/
-      sudo /tmp/#{PE_VERSION}/puppet-enterprise-installer -A /vagrant/#{NAME_PUPPETDB}.answer
-      sudo /usr/local/bin/puppet config set environment_timeout #{ENVIRONMENT_TIMEOUT} --section master
-      sudo /usr/local/bin/puppet config set runinterval #{RUNINTERVAL} --section agent
-      sudo service pe-puppet restart
+      yum install --assumeyes epel-release
+      yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns at
+      service atd start
+      service iptables stop
+      service messagebus restart
+      service avahi-daemon restart
+      sleep #{AVAHI_DELAY} # wait for avahi-daemon to discover other servers
+      tar --extract --ungzip --file=/vagrant/#{PE_BUNDLE} -C /tmp/
+      /tmp/#{PE_VERSION}/puppet-enterprise-installer -A /vagrant/#{NAME_PUPPETDB}.answer
+      /usr/local/bin/puppet config set environment_timeout #{ENVIRONMENT_TIMEOUT} --section master
+      /usr/local/bin/puppet config set runinterval #{RUNINTERVAL} --section agent
+      service pe-puppet restart
     SHELL
   end
   
@@ -153,7 +164,8 @@ Vagrant.configure("2") do |config|
     end
     console.vm.hostname = "#{NAME_CONSOLE}.#{DOMAIN}"
     console.vm.network "private_network", type: "dhcp"
-    console.vm.post_up_message = "Puppet Enterprise is now running. Access the console at '\033[36mhttp://console.local\033[32m'."
+    # If the Puppet Console credentials are changed in the answer file they must also be changed in the message below
+    console.vm.post_up_message = "Puppet Enterprise is now running. Access the console at '\033[36mhttp://console.local\033[32m'. The username is '\033[34madmin\033[32m' and the password is '\033[34mpuppetpassword\033[32m'."
     console.vm.provider "virtualbox" do |v|
       v.name = "Puppet Console"
       v.memory = MEMORY_CONSOLE
@@ -164,28 +176,29 @@ Vagrant.configure("2") do |config|
       ]     
     end
     console.vm.provision "shell", inline: <<-SHELL
-      sudo yum install --assumeyes epel-release
-      sudo yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns at
-      sudo service atd start
-      sudo service iptables stop
-      sudo service messagebus restart
-      sudo service avahi-daemon restart
-      sleep 3 # wait for avahi-daemon to discover other servers
-      sudo tar --extract --ungzip --file=/vagrant/#{PE_BUNDLE} -C /tmp/
-      sudo /tmp/#{PE_VERSION}/puppet-enterprise-installer -A /vagrant/#{NAME_CONSOLE}.answer
-      sudo /usr/local/bin/puppet config set environment_timeout #{ENVIRONMENT_TIMEOUT} --section master
-      sudo /usr/local/bin/puppet config set runinterval #{RUNINTERVAL} --section agent
-      sudo service pe-puppet restart
+      yum install --assumeyes epel-release
+      yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns at
+      service atd start
+      service iptables stop
+      service messagebus restart
+      service avahi-daemon restart
+      sleep #{AVAHI_DELAY} # wait for avahi-daemon to discover other servers
+      tar --extract --ungzip --file=/vagrant/#{PE_BUNDLE} -C /tmp/
+      /tmp/#{PE_VERSION}/puppet-enterprise-installer -A /vagrant/#{NAME_CONSOLE}.answer
+      /usr/local/bin/puppet config set environment_timeout #{ENVIRONMENT_TIMEOUT} --section master
+      /usr/local/bin/puppet config set runinterval #{RUNINTERVAL} --section agent
+      service pe-puppet restart
+      echo -e "<?xml version=\"1.0\" standalone='no'?><\!--*-nxml-*-->\n<\!DOCTYPE service-group SYSTEM "avahi-service.dtd">\n\n<service-group>\n\n\t<name replace-wildcards=\"yes\">Puppet Enterprise Console (%h)</name>\n\n\t<service>\n\t\t<type>_https._tcp</type>\n\t\t<port>443</port>\n\t</service>\n\n</service-group>\n" >> /etc/avahi/services/console.service
     SHELL
   end
 
   EL_INSTANCES.times do |i|
-    config.vm.define "elnode#{i}".to_sym do |elnode|
+    config.vm.define "el-node#{i}".to_sym do |elnode|
       elnode.vm.box = "chef/centos-6.6"
       if Vagrant.has_plugin?("vagrant-cachier")
         config.cache.scope = :machine
       end
-      elnode.vm.hostname = "elnode#{i}.#{DOMAIN}"
+      elnode.vm.hostname = "el-node#{i}.#{DOMAIN}"
       elnode.vm.network "private_network", type: "dhcp"
       elnode.vm.provider "virtualbox" do |v|
         v.name = "PE-Managed EL Node #{i}"
@@ -197,27 +210,27 @@ Vagrant.configure("2") do |config|
         ]
       end
       elnode.vm.provision "shell", inline: <<-SHELL
-      sudo yum install --assumeyes epel-release
-      sudo yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns
-      sudo service iptables stop
-      sudo service messagebus restart
-      sudo service avahi-daemon restart
-      sleep 3 # wait for avahi-daemon to discover other servers
+      yum install --assumeyes epel-release
+      yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns
+      service iptables stop
+      service messagebus restart
+      service avahi-daemon restart
+      sleep #{AVAHI_DELAY} # wait for avahi-daemon to discover other servers
       curl -k https://master.local:8140/packages/current/install.bash | sudo bash
-      sudo /usr/local/bin/puppet config set environment_timeout #{ENVIRONMENT_TIMEOUT} --section master
-      sudo /usr/local/bin/puppet config set runinterval #{RUNINTERVAL} --section agent
-      sudo service pe-puppet restart
+      /usr/local/bin/puppet config set environment_timeout #{ENVIRONMENT_TIMEOUT} --section master
+      /usr/local/bin/puppet config set runinterval #{RUNINTERVAL} --section agent
+      service pe-puppet restart
       SHELL
     end
   end
   
   WIN_INSTANCES.times do |i|
-    config.vm.define "winnode#{i}".to_sym do |winnode|
+    config.vm.define "win-node#{i}".to_sym do |winnode|
       winnode.vm.guest = :windows
       winnode.vm.communicator = "winrm"
       winnode.winrm.timeout = 500
       winnode.vm.box = "windows"
-      winnode.vm.hostname = "winnode#{i}.#{DOMAIN}"
+      winnode.vm.hostname = "win-node#{i}.#{DOMAIN}"
       winnode.vm.network "private_network", type: "dhcp"
       winnode.vm.network :forwarded_port, guest: 5985, host: 5985, id: "winrm", auto_correct: true
       winnode.vm.network :forwarded_port, guest: 3389, host: 3389, id: "rdp", auto_correct: true
@@ -230,18 +243,12 @@ Vagrant.configure("2") do |config|
           "--groups", "/#{GROUP}"
         ]
       end
-#      winnode.vm.provision "shell", inline: <<-SHELL
-#      sudo yum install --assumeyes epel-release
-#      sudo yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns
-#      sudo service iptables stop
-#      sudo service messagebus restart
-#      sudo service avahi-daemon restart
-#      sleep 3 # wait for avahi-daemon to discover other servers
-#      curl -k https://master.local:8140/packages/current/install.bash | sudo bash
-#      sudo /usr/local/bin/puppet config set environment_timeout #{ENVIRONMENT_TIMEOUT} --section master
-#      sudo /usr/local/bin/puppet config set runinterval #{RUNINTERVAL} --section agent
-#      sudo service pe-puppet restart
-#      SHELL
+      #winnode.vm.provision :shell, inline: "Restart-Computer"
+      winnode.vm.provision :shell, path: "./scripts/Install-BonjourClient.ps1"
+      winnode.vm.provision "shell" do |s|
+        s.path = "./scripts/Install-PuppetEnterpriseAgent.ps1"
+        s.args = "#{NAME_MASTER}.#{DOMAIN}"
+      end
     end
   end
 
