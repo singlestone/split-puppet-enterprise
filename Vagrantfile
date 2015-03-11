@@ -8,6 +8,7 @@ PE_INSTALLER="puppet-enterprise-#{PUPPET_ENTERPRISE_VERSION}-el-6-x86_64.tar.gz"
 PE_WIN_AGENT="puppet-enterprise-#{PUPPET_ENTERPRISE_VERSION}-x64.msi"
 BONJOUR_WIN_CLIENT="Bonjour64.msi"
 
+
 # Check for required installers and download if missing
 if ! File.exists?('./bin')
   printf "The 'bin' directory was not found, creating it..."
@@ -17,21 +18,45 @@ if ! File.exists?('./bin')
 end
 
 if ! File.exists?("./bin/#{PE_INSTALLER}")
-  puts "\033[31mPuppet Enterprise installer could not be found!\033[39m"
-  puts "Please run '\033[36m./run_first.sh\033[39m' to download required dependencies."
-  exit 1
+  puts "\033[31mPuppet Enterprise installer could not be found!\033[39m."
+  printf "Downloading #{URL}/#{PE_INSTALLER} (be patient!)..."
+  #puts "Please run '\033[36m./run_first.sh\033[39m' to download required dependencies."
+  require 'open-uri'
+  File.open("./bin/#{PE_INSTALLER}", "wb") do |saved_file|
+    open("#{URL}#{PE_INSTALLER}", "rb") do |read_file|
+      saved_file.write(read_file.read)
+    end
+  end
+  puts "done."
+  #exit 1
 end
 
 if ! File.exists?("./bin/#{PE_WIN_AGENT}")
-  puts "\033[31mPuppet Enterprise Windows agent installer could not be found!\033[39m"
-  puts "Please run '\033[36m./run_first.sh\033[39m' to download required dependencies."
-  exit 1
+  puts "\033[31mPuppet Enterprise Windows agent installer could not be found!\033[39m."
+  printf "Downloading #{URL}/#{PE_WIN_AGENT} (be patient!)..."
+  #puts "Please run '\033[36m./run_first.sh\033[39m' to download required dependencies."
+  require 'open-uri'
+  File.open("./bin/#{PE_WIN_AGENT}", "wb") do |saved_file|
+    open("#{URL}#{PE_WIN_AGENT}", "rb") do |read_file|
+      saved_file.write(read_file.read)
+    end
+  end
+  puts "done."
+  #exit 1
 end
 
 if ! File.exists?("./bin/#{BONJOUR_WIN_CLIENT}")
-  puts "\033[31mBonjour installer could not be found!\033[39m"
-  puts "Please run '\033[36m./run_first.sh\033[39m' to download required dependencies."
-  exit 1
+  puts "\033[31mBonjour installer could not be found!\033[39m."
+  printf "Downloading #{URL}/#{BONJOUR_WIN_CLIENT} (be patient!)..."
+  #puts "Please run '\033[36m./run_first.sh\033[39m' to download required dependencies."
+  require 'open-uri'
+  File.open("./bin/#{BONJOUR_WIN_CLIENT}", "wb") do |saved_file|
+    open("#{URL}#{BONJOUR_WIN_CLIENT}", "rb") do |read_file|
+      saved_file.write(read_file.read)
+    end
+  end
+  puts "done."
+  #exit 1
 end
 
 # Puppet Enterprise Installer

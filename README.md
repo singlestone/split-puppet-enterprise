@@ -16,16 +16,12 @@ The Vagrantfile supports the [`vagrant-cachier`](https://github.com/fgrehm/vagra
 
 ## How to Use
 
-Clone this repository, and ```cd``` to the repo directory. To download the Puppet Enterprise installer the first time, run the run_first.sh script by typing ```./run_first.sh```. Once that completes, just run ```vagrant up``` to get started. Once the VMs have launched, you can run ```vagrant ssh``` to connect to the Puppet Master. To access the Puppet Enterprise Console, point your browser to https://console.local. The username is ```admin``` and the password is ```puppetpassword```. (The password can be changed in the answer files in this repository.)
+Clone this repository, and ```cd``` to the repo directory. Then run ```vagrant up``` to get started. At the beginning of the first run the required binaries (Puppet Enterprise installer, Puppet Enterprise Agent for Windows, and Bonjour client for Windows) will be downloaded. Once the VMs have launched, you can run ```vagrant ssh``` to connect to the Puppet Master. To access the Puppet Enterprise Console, point your browser to https://console.local. The username is ```admin``` and the password is ```puppetpassword```. (The password can be changed in the answer files in this repository.)
 
 
 ## Troubleshooting
 
 Here are some common problems you may encounter:
-
-### I can't run the ```run_first.sh``` script!
-
-Make sure the script is executable. From your project repo directory, run ```chmod +x run_first.sh```. Then execute the script as normal.
 
 ### My computer slows to a crawl when I run ```vagrant up```!
 
