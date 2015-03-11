@@ -5,6 +5,7 @@ PE_INSTALLER="puppet-enterprise-3.7.2-el-6-x86_64.tar.gz"
 PE_WIN_AGENT="puppet-enterprise-3.7.2-x64.msi"
 BONJOUR_WIN_CLIENT="Bonjour64.msi"
 
+mkdir ./bin
 cd ./bin
 
 # Check for Puppet Enterprise installer and download if missing
