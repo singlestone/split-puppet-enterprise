@@ -80,7 +80,9 @@ EL_INSTANCES=1
 # Number of Windows 2012 
 WIN_INSTANCES=1
 
-# Domain for all nodes, i.e. "example.com". Defaults to "local".
+# Domain for all nodes, i.e. "example.com". Defaults to "local" for support with
+# Zeroconf (Avahi)/Bonjour. If you change this, ensure that a reliable DNS source
+# is available and configured.
 # Changing this requires modifying the answer files.
 DOMAIN="local"
 
