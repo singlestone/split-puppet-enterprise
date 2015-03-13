@@ -128,6 +128,7 @@ Vagrant.configure("2") do |config|
     end
     # This should all be refactored into a parameterized external script file that is shared between all Puppet VMs
     master.vm.provision "shell", inline: <<-SHELL
+      yum upgrade --assumeyes ca-certificates
       yum install --assumeyes epel-release
       yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns at
       service atd start
@@ -162,6 +163,7 @@ Vagrant.configure("2") do |config|
 #       ]
 #     end
 #     ca.vm.provision "shell", inline: <<-SHELL
+#       yum upgrade --assumeyes ca-certificates
 #       yum install --assumeyes epel-release
 #       yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns at
 #       service atd start
@@ -194,6 +196,7 @@ Vagrant.configure("2") do |config|
       ]
     end
     puppetdb.vm.provision "shell", inline: <<-SHELL
+      yum upgrade --assumeyes ca-certificates
       yum install --assumeyes epel-release
       yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns at
       service atd start
@@ -228,6 +231,7 @@ Vagrant.configure("2") do |config|
       ]     
     end
     console.vm.provision "shell", inline: <<-SHELL
+      yum upgrade --assumeyes ca-certificates
       yum install --assumeyes epel-release
       yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns at
       service atd start
@@ -262,6 +266,7 @@ Vagrant.configure("2") do |config|
         ]
       end
       elnode.vm.provision "shell", inline: <<-SHELL
+      yum upgrade --assumeyes ca-certificates
       yum install --assumeyes epel-release
       yum install --assumeyes avahi avahi-compat-libdns_sd nss-mdns
       service iptables stop
