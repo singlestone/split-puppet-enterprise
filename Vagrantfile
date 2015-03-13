@@ -105,7 +105,7 @@ RUNINTERVAL="5m"
 ENVIRONMENT_TIMEOUT="30s"
 
 # Pause after Avahi startup
-AVAHI_DELAY="5"
+AVAHI_DELAY="10"
 
 
 Vagrant.configure("2") do |config|
