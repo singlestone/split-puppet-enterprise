@@ -6,8 +6,8 @@ This project is used for creating a small split installation of Puppet Enterpris
 ## Requirements
 
 You must have:
-- Vagrant
-- VirtualBox
+- [Vagrant](https://www.vagrantup.com)
+- [VirtualBox](https://www.virtualbox.org)
 - Sufficient RAM to run the VMs. By default, the VMs are configured with 7.25 GiB (total) of RAM. Having at least 10 GiB of RAM installed in your host machine is advisable to avoid swapping. You can adjust the VM RAM settings in the Vagrantfile, however some Puppet components may not perform adequately with lower amounts.
 - A [Zeroconf](https://en.wikipedia.org/wiki/Zero-configuration_networking)/[Bonjour](https://en.wikipedia.org/wiki/Bonjour_(software)) client running on your host machine (i.e. your laptop). Any Mac running OS X already has this. For Windows, try Apple's [Bonjour Print Services](https://support.apple.com/kb/DL999?locale=en_US), which installs the required components. You can also install Bonjour (64-bit) from the binary repository referenced in the Vagrantfile. On Linux, install Avahi/mDNS.
 
@@ -37,7 +37,7 @@ For more information on the Vagrant bug (and fix) see https://github.com/mitchel
 
 ### My computer slows to a crawl when I run ```vagrant up```!
 
-Your computer probably doesn't have enough memory to run all of the VMs concurrently. Try adjusting the RAM settings in the Vagrantfile. The parameters names all start with "```MEMORY_```" followed by the role of the VM. You may adjust the number of virtual CPU cores each VM gets with the "```CPU_```" parameters. You can also reduce the number of managed nodes with the ```EL_INSTANCES``` (Linux) and ```WIN_INSTANCES``` (Windows) parameters.
+Your computer probably doesn't have enough memory to run all of the VMs concurrently. Try adjusting the RAM settings in the Vagrantfile. The parameter names all start with "```MEMORY_```" followed by the role of the VM. You may adjust the number of virtual CPU cores each VM gets with the "```CPU_```" parameters. You can also reduce the number of managed nodes with the ```EL_INSTANCES``` (Linux) and ```WIN_INSTANCES``` (Windows) parameters.
 
 ### Running ```vagrant up``` fails when provisioning the Puppet servers (PuppetDB, Console, CA)
 
