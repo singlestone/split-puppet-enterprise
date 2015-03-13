@@ -73,9 +73,31 @@ went wrong.
 
 If this occurs, the best course is to destroy the VM (i.e. ```vagrant destroy --force puppetdb```) and then re-run ```vagrant up```.
 
-If you frequently encounter this issue, try increasing the ```AVAHI_DELAY``` value in the Vagrantfile.
+If you frequently encounter this issue, try increasing the ```AVAHI_DELAY``` value in the Vagrantfile. If that doesn't fix the issue, read on...
+
+### I see `Error: Cannot retrieve metalink for repository: epel. Please verify its path and try again` scroll by during provisioning
+
+There is a sporadic problem with connecting to the [EPEL](https://fedoraproject.org/wiki/EPEL) yum repository. The indication that there is an issue will appear in the Vagrant output while running ```vagrant up```:
+
+```
+==> console: Installed:
+==> console:   epel-release.noarch 0:6-8                                                     
+==> console: Complete!
+==> console: Loaded plugins: fastestmirror
+==> console: Setting up Install Process
+==> console: Loading mirror speeds from cached hostfile
+==> console: Error: Cannot retrieve metalink for repository: epel. Please verify its path and try again
+==> console: atd: unrecognized service
+==> console: messagebus: unrecognized service
+==> console: avahi-daemon: unrecognized service
+```
+
+If the EPEL repo is unavailable, then required packages will not be installed, causing the subsequent Puppet Enterprise installation to fail.
+
+The cause of this problem is unclear, but it could be caused by incorrect time settings on the VM or certificate problems with certain EPEL mirrors when connecting. The best workaround at this time is to destroy the VM (i.e. ```vagrant destroy --force console```) and then re-run ```vagrant up```.
 
 
 ## Future Enhancements
 
+- Deploy Puppet CA to a separate server (it currently runs on the Puppet Master).
 - Add option to provision to AWS instead of VirtualBox.
