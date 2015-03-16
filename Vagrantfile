@@ -8,6 +8,7 @@ PE_INSTALLER="puppet-enterprise-#{PUPPET_ENTERPRISE_VERSION}-el-6-x86_64.tar.gz"
 PE_WIN_AGENT="puppet-enterprise-#{PUPPET_ENTERPRISE_VERSION}-x64.msi"
 BONJOUR_WIN_CLIENT="Bonjour64.msi"
 
+BOX="puppetlabs/centos-6.6-64-nocm"
 
 # Check for required installers and download if missing
 if ! File.exists?('./bin')
@@ -110,8 +111,7 @@ AVAHI_DELAY="10"
 
 Vagrant.configure("2") do |config|
   config.vm.define NAME_MASTER, primary: true do |master|
-    # Using a Chef-provided box for a Puppet installation. Ironic!
-    master.vm.box = "chef/centos-6.6"
+    master.vm.box = BOX
     if Vagrant.has_plugin?("vagrant-cachier")
       config.cache.scope = :machine
     end
@@ -147,7 +147,7 @@ Vagrant.configure("2") do |config|
   end
 
 #   config.vm.define NAME_CA do |ca|
-#     ca.vm.box = "chef/centos-6.6"
+#     ca.vm.box = BOX
 #     if Vagrant.has_plugin?("vagrant-cachier")
 #       config.cache.scope = :machine
 #     end
@@ -180,7 +180,7 @@ Vagrant.configure("2") do |config|
 #   end
   
   config.vm.define NAME_PUPPETDB do |puppetdb|
-    puppetdb.vm.box = "chef/centos-6.6"
+    puppetdb.vm.box = BOX
     if Vagrant.has_plugin?("vagrant-cachier")
       config.cache.scope = :machine
     end
@@ -213,7 +213,7 @@ Vagrant.configure("2") do |config|
   end
   
   config.vm.define NAME_CONSOLE do |console|
-    console.vm.box = "chef/centos-6.6"
+    console.vm.box = BOX
     if Vagrant.has_plugin?("vagrant-cachier")
       config.cache.scope = :machine
     end
@@ -250,7 +250,7 @@ Vagrant.configure("2") do |config|
 
   EL_INSTANCES.times do |i|
     config.vm.define "el-node#{i}".to_sym do |elnode|
-      elnode.vm.box = "chef/centos-6.6"
+      elnode.vm.box = BOX
       if Vagrant.has_plugin?("vagrant-cachier")
         config.cache.scope = :machine
       end
