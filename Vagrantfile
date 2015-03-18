@@ -245,7 +245,7 @@ Vagrant.configure("2") do |config|
       /usr/local/bin/puppet config set environment_timeout #{ENVIRONMENT_TIMEOUT} --section master
       /usr/local/bin/puppet config set runinterval #{RUNINTERVAL} --section agent
       service pe-puppet restart
-      echo -e "<?xml version=\"1.0\" standalone='no'?><\!--*-nxml-*-->\n<\!DOCTYPE service-group SYSTEM "avahi-service.dtd">\n\n<service-group>\n\n\t<name replace-wildcards=\"yes\">Puppet Enterprise Console (%h)</name>\n\n\t<service>\n\t\t<type>_https._tcp</type>\n\t\t<port>443</port>\n\t</service>\n\n</service-group>\n" >> /etc/avahi/services/console.service
+      echo -e "<?xml version=\"1.0\" standalone='no'?><\!--*-nxml-*-->\n<\!DOCTYPE service-group SYSTEM "avahi-service.dtd">\n\n<service-group>\n\n\t<name replace-wildcards=\"yes\">Puppet Enterprise Console (%h)</name>\n\n\t<service>\n\t\t<type>_https._tcp</type>\n\t\t<port>443</port>\n\t</service>\n\n</service-group>\n" >> /etc/avahi/services/pe-console.service
     SHELL
   end
 
