@@ -124,7 +124,8 @@ Vagrant.configure("2") do |config|
       v.cpus = CPU_MASTER
       v.customize [ 
         "modifyvm", :id,
-        "--groups", "/#{GROUP}"
+        "--groups", "/#{GROUP}",
+        "--ioapic", "on"
       ]
     end
     # This should all be refactored into a parameterized external script file that is shared between all Puppet VMs
@@ -160,7 +161,8 @@ Vagrant.configure("2") do |config|
 #       v.cpus = CPU_CA
 #       v.customize [ 
 #         "modifyvm", :id,
-#         "--groups", "/#{GROUP}"
+#         "--groups", "/#{GROUP}",
+#         "--ioapic", "on"
 #       ]
 #     end
 #     ca.vm.provision "shell", inline: <<-SHELL
@@ -193,7 +195,8 @@ Vagrant.configure("2") do |config|
       v.cpus = CPU_PUPPETDB
       v.customize [ 
         "modifyvm", :id,
-        "--groups", "/#{GROUP}"
+        "--groups", "/#{GROUP}",
+        "--ioapic", "on"
       ]
     end
     puppetdb.vm.provision "shell", inline: <<-SHELL
@@ -228,7 +231,8 @@ Vagrant.configure("2") do |config|
       v.cpus = CPU_CONSOLE
       v.customize [ 
         "modifyvm", :id,
-        "--groups", "/#{GROUP}"
+        "--groups", "/#{GROUP}",
+        "--ioapic", "on"
       ]     
     end
     console.vm.provision "shell", inline: <<-SHELL
@@ -263,7 +267,8 @@ Vagrant.configure("2") do |config|
         v.cpus = CPU_NODE
         v.customize [
           "modifyvm", :id,
-          "--groups", "/#{GROUP}"
+          "--groups", "/#{GROUP}",
+          "--ioapic", "on"
         ]
       end
       elnode.vm.provision "shell", inline: <<-SHELL
@@ -298,7 +303,8 @@ Vagrant.configure("2") do |config|
         v.cpus = CPU_NODE
         v.customize [
           "modifyvm", :id,
-          "--groups", "/#{GROUP}"
+          "--groups", "/#{GROUP}",
+          "--ioapic", "on"
         ]
       end
       #winnode.vm.provision :shell, inline: "Restart-Computer"
