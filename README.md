@@ -2,6 +2,8 @@
 
 This project is used for creating a small split installation of Puppet Enterprise for testing and evaluation purposes. It is not suitable for production use. A split installation installs Puppet Master, PuppetDB, and Console on separate servers and is a recommended architecture for scalability. A future version will further split the installation by installing the Certificate Authority and Puppet Master on separate nodes.
 
+For a monolithic (all Puppet services on one VM) Puppet Enterprise version of this project try [puppet-enterprise](https://github.com/singlestone/puppet-enterprise).
+
 
 ## Requirements
 
