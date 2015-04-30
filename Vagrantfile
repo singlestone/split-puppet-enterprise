@@ -62,7 +62,7 @@ if ! File.exists?("./bin/#{BONJOUR_WIN_CLIENT}")
 end
 
 # Puppet Enterprise Installer
-PE_VERSION="puppet-enterprise-3.7.2-el-6-x86_64"
+PE_VERSION="puppet-enterprise-#{PUPPET_ENTERPRISE_VERSION}-el-6-x86_64"
 PE_BUNDLE="./bin/#{PE_VERSION}.tar.gz"
 
 # Hostnames of systems
@@ -224,7 +224,7 @@ Vagrant.configure("2") do |config|
     console.vm.hostname = "#{NAME_CONSOLE}.#{DOMAIN}"
     console.vm.network "private_network", type: "dhcp"
     # If the Puppet Console credentials are changed in the answer file they must also be changed in the message below
-    console.vm.post_up_message = "Puppet Enterprise is now running. Access the console at '\033[36mhttps://console.local\033[32m'. The username is '\033[34madmin\033[32m' and the password is '\033[34mpuppetpassword\033[32m'."
+    console.vm.post_up_message = "Puppet Enterprise is now running. Access the console at '\033[36mhttps://#{NAME_CONSOLE}.#{DOMAIN}\033[32m'. The username is '\033[34madmin\033[32m' and the password is '\033[34mpuppetpassword\033[32m'."
     console.vm.provider "virtualbox" do |v|
       v.name = "Puppet Console"
       v.memory = MEMORY_CONSOLE
